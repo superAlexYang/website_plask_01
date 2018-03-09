@@ -1,0 +1,8 @@
+{% extends "message.html" %}
+
+{% block message_action %}
+
+	<a class="btn btn-default" href="{{url_for('release', questionnaire_id=q_id)}}">Release Now</a>
+	<a class="btn btn-default" href="{{url_for('questionnaire', questionnaire_id=q_id)}}">Questionnaire Dashboard</a>
+
+{% endblock %}

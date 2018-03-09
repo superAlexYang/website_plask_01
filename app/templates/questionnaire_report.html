@@ -1,0 +1,191 @@
+{% extends "questionnaire.html" %}
+
+{% block report %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.scrollLoading.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+<script type="text/javascript">
+
+    var options =
+        [{% for i in range(0,ques_list|length) %}
+        {
+        {% if ques_list[i].type!='3' %}
+        chart: 
+        {
+       
+	    plotBackgroundColor: null,
+	    plotBorderWidth: null,
+	    plotShadow: false,
+	    renderTo:'container_{{i}}',
+	    {% if ques_list[i].type!='1' %}
+	    type:'pie'
+	    {% else %}
+	    type:'bar'
+	    {% endif %}
+        },
+        title: {
+            text: '{{pics[i]}}'
+        },
+        tooltip: {
+    	    pointFormat: {% if ques_list[i].type!='1' %}'{series.name}: <b>{point.percentage:.1f}%</b>'
+    	    {% else %}'{series.name}: <b>{point.y}%</b>'{% endif %}
+        },
+         xAxis: {
+                categories: [{% for j in ques_list[i].option_list %}"{{j}}",{% endfor %}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Number ',
+                    align: 'high'
+                },
+                labels: {
+                    // overflow: 'justify'
+                }
+            },
+
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            // type: 'pie',
+            name: 'sum of the answers',
+            data: [
+
+                {% for j in range(0,ques_list[i].option_list|length) %}
+                ['{{ques_list[i].option_list[j]}}',{{ques_list[i].num_list[j]}}],
+                {% endfor %}
+
+            ]
+        	}]
+        	{% endif %}
+    	},
+    	{% endfor %}
+    ];
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".scrollLoading").scrollLoading({
+			callback: function(id) {
+        		new Highcharts.Chart(options[id]);
+    		}
+		});
+		 
+		$("a.change").click(function(){
+			var type = $(this).html();
+			//$(this).parent().parent().prev().html()=type;
+			var change=$(this).parent().parent().attr("id").split('_')[1];
+			document.getElementById("chart_menu"+change).innerHTML=type+"<span class=\"caret\"></span>";
+			if(type == "pie") {
+				options[change].tooltip.pointFormat = '{series.name}: <b>{point.percentage:.1f}%</b>';
+			}else {
+				options[change].tooltip.pointFormat = '{series.name}: <b>{point.y}</b>';
+			}
+			options[change].chart.type = type;
+			new Highcharts.Chart(options[change]);
+		});
+	});
+</script>
+
+{% for i in range(0,ques_list|length) %}
+{% if i > 0 %}
+<br />
+{% endif %}
+
+<div id="ques_{{i}}">
+{% if ques_list[i].type=='3' %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">{{ques_list[i].description}}</div>
+    </div>
+<table class="table table-bordered" style="text-align:center">
+  <tbody>
+  	{% if not ques_list[i]["option_list"] %}
+     <tr>
+  	
+  <td>No answer yet.
+  </td>
+
+  </tr>
+  	{% endif %}
+
+  {% for j in range(0,ques_list[i].option_list|length) %}
+
+   <tr>
+  <td>{{ques_list[i].option_list[j]}}
+  </td>
+
+  </tr>
+
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+</div>
+
+
+{% else %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">{{ques_list[i].description}}</div>
+    </div>
+    <div class="panel-body">
+      <div class="btn-group">
+  <button id="chart_menu{{i}}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width:102px;">
+    Chart Style<span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu" id="chart_{{i}}">
+    <li><a  class="change">pie</a></li>
+    <li><a  class="change">bar</a></li>
+    
+    <li><a class="change">column</a></li>
+  </ul>
+</div>
+
+<div class="scrollLoading" id="container_{{i}}" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+
+<table class="table table-bordered table-striped">
+  <thead>
+  <tr>
+  <td>{{ques_list[i].description}}
+  </td>
+  <td>sum of the answers
+  </td>
+  </tr>
+  </thead>
+  <tbody>
+  {% for j in range(0,ques_list[i].option_list|length) %}
+   <tr>
+  <td>{{ques_list[i].option_list[j]}}
+  </td>
+  <td>{{ques_list[i].num_list[j]}}
+  </td>
+  </tr>
+
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+{% endif %}
+</div>
+
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style type="text/css">
+	body {
+		background-color: #EFEFEF;
+	}
+	p[id] {
+		font-size: 16px;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-10 col-md-offset-1 panel panel-default" style="padding: 10px">
+<h1>[{{subject}}] {{title}}</h1>
+<p id="description">{{description}}</p>
+<hr style="border:0;background-color:#357ebd;height:1px;">
+<form method="POST">
+	<div id="ques_list" class="grid">
+	{% for i in range(0,schema|length) %}
+
+		<div class="cell" id="ques_{{i}}.div">
+			<p id="ques_{{i}}.description">{{i+1}}.&nbsp;{{pics[i]}}</p>
+			 
+    			<img src="/static/img/{{description}}/{{pics[i]}}"/ height="160" width="160"> 
+
+			{% if schema[i].type=='0' %}
+			<ul style="list-style-type:none">
+			{% for j in range(0,schema[i].options|length) %}
+				<li>
+					<input type="radio" name="ques_{{i}}.ans" value="{{j}}"/>
+					{{schema[i].options[j]}}
+				</li>
+			{% endfor %}
+			{% endif %}
+			
+		</div>
+	{% endfor %}
+	</div>
+	<br/><br/>
+	<button class="btn btn-primary col-md-2" type="submit">
+		Submit
+	</button>
+</form>
+</div>
+{% endblock %}

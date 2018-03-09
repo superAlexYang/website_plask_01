@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="col-md-10 col-md-offset-1">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 style="color:#FFFFFF">{{ title }}</h1>
+        </div>
+        <div class="col-md-4" style="margin-top:28px">
+            <a class="btn btn-large btn-default" href="{{ questionnaire_id }}/preview">Preview</a>
+            {% if ques.author_id == g.user.id %}
+            <a class="btn btn-large btn-default" href="{{ questionnaire_id }}/modify">Modify</a>
+            {% if state == 'In creating' %}
+            <a class="btn btn-large btn-success" href="{{ questionnaire_id }}/release">Release</a>
+            {% endif %}
+            {% if state == 'Closed' %}
+            <a class="btn btn-large btn-success" href="{{ questionnaire_id }}/release">Reopen</a>
+            {% endif %}
+            {% if state == 'In releasing' or state == 'In reopening' %}
+            <a class="btn btn-large btn-danger" href="{{ questionnaire_id }}/close">Close</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <br/>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 panel panel-default" style="background-color:rgba(255, 255, 255, 0.4)">
+        <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10">
+                <dl class="dl-horizontal col-md-6">
+                    <dt>State</dt>
+                    <dd>{{ state }}</dd>
+                </dl>
+                <dl class="dl-horizontal col-md-6">
+                    <dt>Subject</dt>
+                    <dd>{{ subject }}</dd>
+                </dl>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10">
+            <dl class="dl-horizontal col-md-12">
+                <dt>Description</dt>
+                <dd>{{ description }}</dd>
+            </dl>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+        </div>
+        </div>
+    </div>
+
+    {% if state == 'In releasing' or state == 'In reopening' %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2 style="color:#FFFFFF">Current Release</h2>
+        </div>
+    </div>
+
+    <br/>
+
+    
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 panel panel-default" style="background-color:rgba(255, 255, 255, 0.4)">
+        <div class="panel-body">
+        <div class="col-md-8">
+        <dl class="dl-horizontal">
+            <dt>URL: </dt>
+            <dd><a id="Url_Change" href="http://192.168.43.164:5000/questionnaire/{{q_id}}/fill">http://192.168.43.164:5000/questionnaire/{{q_id}}/fill</a></dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Start time</dt>
+            <dd>{{ start_time }}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>End time</dt>
+            <dd>{{ end_time }}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Allow anonymous</dt>
+            <dd>{{ is_allow_anonymous }}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Limit number of deliveries for each participant</dt>
+            <dd>{{ limit_num_participants }}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Limit number of deliveries for IP address</dt>
+            <dd>{{ limit_num_ip }}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Special participants</dt>
+            <dd>{{ special_participants }}</dd>
+        </dl>
+        </div>
+        </div>
+        </div>
+    </div>
+    {% endif %}
+
+<h2 style="color:#FFFFFF">Report</h2>
+<br />
+{% block report %}{% endblock %}
+
+</div>
+</div>
+
+<script>
+    window.onload=function(){
+        var test="http://"+document.location.host;
+        test+="/questionnaire/{{q_id}}/fill";
+        document.getElementById("Url_Change").setAttribute("href",test);
+        document.getElementById("Url_Change").innerHTML=test;
+    }
+</script>
+
+{% endblock %}

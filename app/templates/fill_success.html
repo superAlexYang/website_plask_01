@@ -1,0 +1,9 @@
+{% extends "message.html" %}
+
+{% block message_action %}
+	{% if g.user %}
+    <a class="btn btn-default" href="{{url_for('user',username=g.user.username)}}">User Dashboard</a>
+	{% else %}
+    <a class="btn btn-warning" href="{{url_for('register')}}">Register</a>
+	{% endif %}
+{% endblock %}

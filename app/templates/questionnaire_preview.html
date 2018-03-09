@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style type="text/css">
+	body {
+		background-color: #EFEFEF;
+	}
+	p[id] {
+		font-size: 16px;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-10 col-md-offset-1 panel panel-default" style="padding: 60px">
+<h1>[{{subject}}] {{title}}</h1>
+<p id="description">{{description}}</p>
+<hr style="border:0;background-color:#357ebd;height:1px;">
+<form method="POST">
+	<div id="ques_list">
+	{% for i in range(0,schema|length) %}
+		<div>
+
+			<p id="ques_{{i}}.description">{{i+1}}.&nbsp;{{schema[i].description}}</p>
+			<img src="https://www.example.com/images/dinosaur.jpg">
+			{% if schema[i].type=='0' %}
+			<ul style="list-style-type:none">
+			{% for j in range(0,schema[i].options|length) %}
+				<li>
+					<input type="radio" value="{{j}}" disabled="disabled"/>
+					{{schema[i].options[j]}}
+				</li>
+			{% endfor %}
+			</ul>
+			{% elif schema[i].type=='1' %}
+			<ul style="list-style-type:none">
+			{% for j in range(0,schema[i].options|length) %}
+				<li>
+					<input type="checkbox" value="1" disabled="disabled"/>
+					{{schema[i].options[j]}}
+				</li>
+			{% endfor %}
+			</ul>
+			{% elif schema[i].type=='2' %}
+			<ul style="list-style-type:none">
+				<li>
+					<input type="radio" value="1" disabled="disabled"/>
+					True
+				</li>
+				<li>
+					<input type="radio" value="0" disabled="disabled"/>
+					False
+				</li>
+			</ul>
+			{% elif schema[i].type=='3' %}
+			<div class="row">
+				<div class="col-md-6">
+					<textarea rows="8" class="form-control" name="ques_{{i}}.ans" disabled="disabled"></textarea>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+	{% endfor %}
+	</div>
+	</form>
+	<br/><br/>
+	<a class="btn btn-primary col-md-2" href="{{url_for('modify',q_id=id)}}">Modify</a>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei UI", "Microsoft YaHei", SimHei, simsun, sans-serif;
+    background: url(/static/img/plask_back_pic.jpg) fixed;
+    -webkit-background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -o-background-size: 100% 100%;
+    background-size: 100% 100%;
+
+}
+
+.maindiv {
+    margin-top: 40px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    line-height: 200%;
+}
+
+.navbar-inverse {
+    background-color: #000;
+    border-color: #080808;
+};
+
+a:hover {
+    text-decoration: none;
+}
+
+#scrollUp {
+    bottom: 20px;
+    right: 20px;
+    height: 38px;
+    width: 38px;
+    background: url("../img/top.png") no-repeat;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: white;
+}
+/****************************/
+.grid {
+  display: flex;                       /* establish flex container */
+  flex-wrap: wrap;                     /* enable flex items to wrap */
+  justify-content: space-around;
+  
+}
+.cell {
+  flex: 0 0 0 0 20%;                       /* don't grow, don't shrink, width */
+  height: 350px;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}"/>
+<script type="text/javascript" src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.scrollLoading.js') }}"></script>
+<style type="text/css">
+  h1, h2, p {
+    color: white;
+  }
+</style>
+<script type="text/javascript">
+  var options =
+      [{
+        chart: 
+        {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          renderTo:'container_0',
+          type:'line'
+        },
+        title: {
+            text: 'The number of questionnaires per day in a week'
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        xAxis: {
+          categories: [{% for (d, n) in questionnaires_week %}"{{d.strftime('%m-%d')}}",{% endfor %}],
+          title: {
+              text: null
+          }
+        },
+        yAxis: {
+          min: 0,
+          title: {
+              text: 'Number ',
+              align: 'high'
+          },
+          labels: {
+              // overflow: 'justify'
+          }
+        },
+
+        plotOptions: {
+        },
+        series: [{
+            // type: 'pie',
+            name: 'Number of questionnaires',
+            data: [
+                {% for (d, n) in questionnaires_week %}{{n}},{% endfor %}
+            ]
+          }]
+      },{
+        chart: 
+        {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          renderTo:'container_1',
+          type:'line'
+        },
+        title: {
+          text: 'The number of answer sheets per day in a week'
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+         xAxis: {
+            categories: [{% for (d, n) in answer_week %}"{{d.strftime('%m-%d')}}",{% endfor %}],
+            title: {
+                text: null
+            }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  text: 'Number ',
+                  align: 'high'
+              },
+              labels: {
+                  // overflow: 'justify'
+              }
+          },
+
+        plotOptions: {
+        },
+        series: [{
+            // type: 'pie',
+            name: 'Number of answers',
+            data: [
+                {% for (d, n) in answer_week %}{{n}},{% endfor %}
+            ]
+          }]
+      }];
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".scrollLoading").scrollLoading({
+      callback: function(id) {
+            new Highcharts.Chart(options[id]);
+        }
+    });
+  });
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="col-md-1">
+  <div id="plask-sidebar" class="plask-sidebar hidden-print hidden-xs hidden-sm">
+    <ul class="nav plask-sidenav">
+      <li>
+        <a href="#overview" style="color:#FFFFFF"><span class="glyphicon glyphicon-stats"></span>&nbsp;Overview</a>
+      </li>
+      <li>
+        <a href="#all_users" style="color:#FFFFFF"><span class="glyphicon glyphicon-user"></span>&nbsp;All users</a>
+      </li>
+      <li>
+        <a href="#all_questionnaires" style="color:#FFFFFF"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;All ques.</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="col-md-11">
+  
+  <h1>Administrator</h1>
+  <hr/>
+
+  <h2 id="overview" class="page-header">Overview</h2>
+
+  <div class="row" style="margin-bottom:40px">
+    <div class="col-md-6 scrollLoading" id="container_0"
+         style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+    <div class="col-md-6 scrollLoading" id="container_1"
+         style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+  </div>
+
+  <br/>
+
+  <h2 id="all_users" class="page-header">All users</h2>
+  <div class="panel panel-default">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>
+        <span>Username</span>
+      </th>
+      <th>
+        <span>Status</span>
+      </th>
+      <th>
+        <span>Operation</span>
+      </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for u in users %}
+    <tr>
+    <td>
+      <a href="{{url_for('user', username = u.username )}}">{{ u.username }}
+      </a>
+    </td>
+
+    <td>
+      {% if u.is_ban %}
+        <span style="color:red">Banned</span>
+      {% else %}
+        <span>Normal</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if not u.is_admin %}
+        {% if u.is_ban %}
+          <a class="btn btn-xs btn-success" href="{{url_for('unban_user', userid = u.id )}}">Unban</a>
+        {% else %}
+          <a class="btn btn-xs btn-danger" href="{{url_for('ban_user', userid = u.id )}}">Ban</a>
+        {% endif %}
+      {% endif %}
+    </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <br/>
+
+  <h2 id="all_questionnaires" class="page-header">All questionnaires</h2>
+  <div class="panel panel-default">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>
+        <span>Title</span>
+      </th>
+      <th>
+        <span>Create time</span>
+      </th>
+      <th>
+        <span>Status</span>
+      </th>
+      <th>
+        <span>Operation</span>
+      </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for q in questionnaires %}
+    <tr>
+    <td>
+      <a href="{{url_for('questionnaire', questionnaire_id = q.id )}}">{{ q.title }}</a>
+    </td>
+
+    <td>
+      <span>{{q.create_time.strftime("%Y-%m-%d %H:%M") if q.create_time else "Not yet"}}</span>
+    </td>
+
+    <td>
+      {% if q.is_ban %}
+        <span style="color:red">Banned</span>
+      {% else %}
+        <span>Normal</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if q.is_ban %}
+        <a class="btn btn-xs btn-success" href="{{url_for('unban_questionnaire', qid = q.id )}}">Unban</a>
+      {% else %}
+        <a class="btn btn-xs btn-danger" href="{{url_for('ban_questionnaire', qid = q.id )}}">Ban</a>
+      {% endif %}
+    </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+</div>
+
+{% endblock %}
