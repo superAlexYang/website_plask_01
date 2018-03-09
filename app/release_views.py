@@ -49,7 +49,7 @@ def questionnaire(questionnaire_id):
 
         ques_list = get_ques_list(q)
 
-        pics = os.listdir('C:/Users/AlexYang/Desktop/Plask-backup-success_v1/Plask-master/app/static/img/'+q.description+"/")
+        pics = os.listdir('/var/www/Flask/Flask/app/static/img/'+q.description+"/")
 
         return render_template('questionnaire_report.html',
             questionnaire_id = questionnaire_id,
