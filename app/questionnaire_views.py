@@ -85,7 +85,7 @@ def fill(q_id):
     q = Questionnaire.query.get(q_id)
     if not q:
         return "ERROR!"
-    pics = os.listdir('C:/Users/AlexYang/Desktop/Plask-backup-success_v1/Plask-master/app/static/img/'+q.description+"/")
+    pics = os.listdir('/var/www/Flask/Flask/app/static/img/'+q.description+"/")
 
     #begin access control
     if q.get_status() == 'Banned':
